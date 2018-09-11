@@ -6,36 +6,52 @@ import { app } from 'electron'
 
 class Application implements BasicApplication, ElectronApplication {
   _window: Window
+  _runtime: Runtime
 
-  constructor (window: Window) {
+  constructor (window: Window, runtime: Runtime) {
     this._window = window
+    this._runtime = runtime
   }
 
   start (): void {
-    this.onReady(() => {
-    })
+    this._bindReadyEvent()
+    this._bindWillQuitEvent()
+    this._bindWindowsClosedEvent()
+    this._bindActivateEvent()
   }
 
   quit (): void {
     app.quit()
   }
 
-  onReady (callback: Function): void {
+  _bindReadyEvent (): void {
     app.on('ready', () => {
-
+      this._runtime.start()
     })
   }
 
-  onWindowsClosed (callback: Function): void {
-    //
+  _bindWindowsClosedEvent (): void {
+    app.on('window-all-closed', () => {
+      if (process.platform !== 'darwin') {
+        this.quit()
+      }
+    })
   }
 
-  onWillQuit (callback: Function): void {
-    //
+  _bindWillQuitEvent (): void {
+    app.on('will-quit', () => {
+      this._runtime.stop()
+    })
   }
 
-  onActivate (callback: Function): void {
-    //
+  _bindActivateEvent (): void {
+    app.on('activate', () => {
+      this._window.show()
+    })
+  }
+
+  isAlreadyRunning (): boolean {
+    return app.makeSingleInstance()
   }
 }
 

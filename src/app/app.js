@@ -14,24 +14,17 @@
 
 import Kernel from './v2/kernel'
 import Application from './v2/application'
-import SingleAppInstanceIsRunningMiddleware from './v2/middlewares/single-app-instance-is-running-middleware'
-import SendStartupEventMiddleware from './v2/middlewares/send-startup-event-middleware'
+import SingleAppInstanceIsRunningHook from './v2/middlewares/single-app-instance-is-running-middleware'
+import SendStartupEventHook from './v2/middlewares/send-startup-event-middleware'
 import logger from './logger'
 
 const app = new Application(logger)
+app.setLogger(new Logger())
+app.setSessionId(Math.rand())
+
 const kernel = new Kernel(app)
-kernel.registerBeforeLaunchMiddleware(new SingleAppInstanceIsRunningMiddleware(app))
-kernel.registerBeforeLaunchMiddleware(new SendStartupEventMiddleware())
-
-kernel.registerAfterLaunchMiddleware(new AfterLaunchMiddleware())
-kernel.registerAfterLaunchMiddleware(new AfterLaunchMiddleware())
-
+kernel.registerBeforeLaunchHook(new SingleAppInstanceIsRunningHook(app))
+kernel.registerBeforeLaunchHook(new SendStartupEventHook())
+kernel.registerBeforeLaunchHook(new InitializeCommunicationCallbacksHook())
+kernel.registerBeforeLaunchHook(new LogUnhandledExceptions())
 kernel.bootstrap()
-
-const electron = new Electron()
-electron.onReady(kernel.onReady) // calls bootstrap
-electron.onWindowsClosed(kernel.onWindowsClosed) // quits app except in OSX
-electron.onWillQuit(kernel.onWillQuit) // stop monitoring, process, proposal fetcher (after hook)
-electron.onActivate(kernel.onActivate) // show window
-
-kernel.launchBeforeStartMiddlewares()

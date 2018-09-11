@@ -1,9 +1,9 @@
 // @flow
 
-import type { Middleware } from '../kernel'
+import type { Hook } from '../kernel'
 import StartupEventTracker from '../../statistics/startup-event-tracker'
 
-class SendStartupEventHook implements Middleware {
+class InitializeCommunicationCallbacksHook implements Hook {
   _eventTracker: StartupEventTracker
 
   constructor (eventSender: StartupEventTracker) {
@@ -17,4 +17,4 @@ class SendStartupEventHook implements Middleware {
   }
 }
 
-export default SendStartupEventHook
+export default InitializeCommunicationCallbacksHook

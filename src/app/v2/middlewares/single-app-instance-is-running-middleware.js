@@ -2,7 +2,7 @@
 
 import type { ElectronApplication, Middleware } from '../kernel'
 
-class SingleAppInstanceIsRunningMiddleware implements Middleware {
+class SingleAppInstanceIsRunningHook implements Middleware {
   _app: ElectronApplication
 
   constructor (app: ElectronApplication) {
@@ -14,4 +14,4 @@ class SingleAppInstanceIsRunningMiddleware implements Middleware {
   }
 }
 
-export default SingleAppInstanceIsRunningMiddleware
+export default SingleAppInstanceIsRunningHook
