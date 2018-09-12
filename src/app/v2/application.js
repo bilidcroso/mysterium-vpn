@@ -1,10 +1,10 @@
 // @flow
 
 import Window from '../window'
-import type { BasicApplication, ElectronApplication } from './kernel'
+import type { BasicApplication } from './kernel'
 import { app } from 'electron'
 
-class Application implements BasicApplication, ElectronApplication {
+class Application implements BasicApplication {
   _window: Window
   _runtime: Runtime
 
@@ -50,7 +50,7 @@ class Application implements BasicApplication, ElectronApplication {
     })
   }
 
-  isAlreadyRunning (): boolean {
+  isRunning (): boolean {
     return app.makeSingleInstance()
   }
 }

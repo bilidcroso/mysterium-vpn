@@ -1,16 +1,26 @@
 // @flow
 
-import type { ElectronApplication, Middleware } from '../kernel'
+import type { BasicApplication, Middleware } from '../kernel'
 
 class SingleAppInstanceIsRunningHook implements Middleware {
-  _app: ElectronApplication
+  _app: BasicApplication
 
-  constructor (app: ElectronApplication) {
+  constructor (app: BasicApplication) {
     this._app = app
   }
 
-  handle (): boolean {
-    return this._app.isAlreadyRunning()
+  handle (): ?boolean {
+    if (this._app.isRunning()) {
+      return this._app.quit()
+    }
+
+    this._showWindowIfAvailable()
+  }
+
+  _showWindowIfAvailable () {
+    if (this._window.exists()) {
+      this._window.show()
+    }
   }
 }
 

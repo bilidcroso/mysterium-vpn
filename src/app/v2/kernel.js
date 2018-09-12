@@ -1,11 +1,13 @@
 // @flow
 
 interface Hook {
-  handle (): boolean
+  handle (): ?boolean
 }
 
 interface BasicApplication {
   start (): void,
+
+  isRunning(): boolean,
 
   quit (): void
 }
@@ -18,8 +20,6 @@ interface ElectronApplication {
   onWillQuit (callback: Function): void,
 
   onActivate (callback: Function): void,
-
-  isAlreadyRunning(): boolean
 }
 
 class Kernel {
