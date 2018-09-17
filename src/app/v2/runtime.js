@@ -6,7 +6,9 @@ class Runtime {
   }
 
   start () {
-    // start all fetchers
+    this.proposalFetcher.start()
+    this.process.start()
+    this.monitoring.start()
   }
 
   stop () {

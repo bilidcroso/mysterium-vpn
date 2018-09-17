@@ -12,11 +12,11 @@
 // 10. app on activate
 // 11. app before quit
 
-import Kernel from './v2/kernel'
-import Application from './v2/application'
-import SingleAppInstanceIsRunningHook from './v2/middlewares/single-app-instance-is-running-middleware'
-import SendStartupEventHook from './v2/middlewares/send-startup-event-middleware'
-import logger from './logger'
+import Kernel from './kernel'
+import Application from './application'
+import SingleAppInstanceIsRunningHook from './middlewares/single-app-instance-is-running-middleware'
+import SendStartupEventHook from './middlewares/send-startup-event-middleware'
+import logger from '../logger'
 
 const app = new Application(logger)
 app.setLogger(new Logger())
@@ -27,4 +27,5 @@ kernel.registerBeforeLaunchHook(new SingleAppInstanceIsRunningHook(app))
 kernel.registerBeforeLaunchHook(new SendStartupEventHook())
 kernel.registerBeforeLaunchHook(new InitializeCommunicationCallbacksHook())
 kernel.registerBeforeLaunchHook(new LogUnhandledExceptions())
+kernel.registerBeforeLaunchHook(new CreateHiddenApplicationWindow())
 kernel.bootstrap()
