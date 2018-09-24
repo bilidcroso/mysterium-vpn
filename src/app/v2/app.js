@@ -17,15 +17,27 @@ import Application from './application'
 import SingleAppInstanceIsRunningHook from './middlewares/single-app-instance-is-running-middleware'
 import SendStartupEventHook from './middlewares/send-startup-event-middleware'
 import logger from '../logger'
+import type { ProposalFetcher } from '../data-fetchers/proposal-fetcher'
 
-const app = new Application(logger)
+const runtime = new Runtime()
+runtime.add(new Tray())
+runtime.add(new ProposalFetcher())
+runtime.add(new ProcessManager())
+
+const app = new Application(runtime, logger)
 app.setLogger(new Logger())
 app.setSessionId(Math.rand())
 
 const kernel = new Kernel(app)
-kernel.registerBeforeLaunchHook(new SingleAppInstanceIsRunningHook(app))
-kernel.registerBeforeLaunchHook(new SendStartupEventHook())
-kernel.registerBeforeLaunchHook(new InitializeCommunicationCallbacksHook())
-kernel.registerBeforeLaunchHook(new LogUnhandledExceptions())
-kernel.registerBeforeLaunchHook(new CreateHiddenApplicationWindow())
-kernel.bootstrap()
+const window = new Window()
+kernel.registerBootLoaders(new SendStartupEventHook())
+kernel.registerBootLoaders(new InitializeCommunicationCallbacksHook())
+kernel.registerBootLoaders(new LogUnhandledExceptions())
+
+try {
+  kernel.bootstrap()
+} catch (e) {
+  const handler = new ExceptionHandler(e)
+  handler.handle()
+}
+

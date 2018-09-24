@@ -14,6 +14,7 @@ class Application implements BasicApplication {
   }
 
   start (): void {
+    this._makeSureOnlySingleInstanceIsRunning()
     this._bindReadyEvent()
     this._bindWillQuitEvent()
     this._bindWindowsClosedEvent()
@@ -21,6 +22,7 @@ class Application implements BasicApplication {
   }
 
   quit (): void {
+    this.runtime.stop()
     app.quit()
   }
 
@@ -50,8 +52,8 @@ class Application implements BasicApplication {
     })
   }
 
-  isRunning (): boolean {
-    return app.makeSingleInstance()
+  _makeSureOnlySingleInstanceIsRunning() {
+    // todo
   }
 }
 

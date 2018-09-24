@@ -12,16 +12,6 @@ interface BasicApplication {
   quit (): void
 }
 
-interface ElectronApplication {
-  onReady (callback: Function): void,
-
-  onWindowsClosed (callback: Function): void,
-
-  onWillQuit (callback: Function): void,
-
-  onActivate (callback: Function): void,
-}
-
 class Kernel {
   _app: BasicApplication
   _beforeLaunchHooks: Array<Hook>
@@ -31,18 +21,13 @@ class Kernel {
     this._app = app
   }
 
-  registerBeforeLaunchHook (hook: Hook) {
+  registerBootLoaders (hook: Hook) {
     this._beforeLaunchHooks.push(hook)
-  }
-
-  registerAfterLaunchHook (hook: Hook) {
-    this._afterLaunchHooks.push(hook)
   }
 
   bootstrap () {
     this._runHooks(this._beforeLaunchHooks)
     this._app.start()
-    this._runHooks(this._afterLaunchHooks)
   }
 
   _runHooks (hooks: Array<Hook>) {
@@ -55,4 +40,4 @@ class Kernel {
 }
 
 export default Kernel
-export type { Hook, BasicApplication, ElectronApplication }
+export type { Hook, BasicApplication }
